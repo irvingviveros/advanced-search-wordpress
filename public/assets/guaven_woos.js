@@ -756,18 +756,20 @@
     var finalUpdate = `
 
     <div class="row">
-      <div class="col-md-4">
-    <p class="searchHeader">Categories</p>
-        ${guaven_woos_cfinalresult}
+        <div class="col-md-4">
+            <p class="searchHeader">Categories</p>
+            ${guaven_woos_cfinalresult}
+            <p class="searchHeader">Pages</p>
+            <a href="#" class="guaven_woos_titlediv_cat">Page 1</a>
+        </div>
     
-    </div>
-    <div class="col-md-8">
-    
-    <p class="searchHeader">Products</p>
-    <ul class="guaven_woos_final_results">
-    ${guaven_woos_finalresult}
-    </ul>
-    </div></div>`;
+        <div class="col-md-8">
+            <p class="searchHeader">Products</p>
+            <ul class="guaven_woos_final_results">
+                ${guaven_woos_finalresult}
+            </ul>
+        </div>
+    </div>`;
 
 
     // jQuery('.guaven_woos_suggestion').html(gws_final_html);
