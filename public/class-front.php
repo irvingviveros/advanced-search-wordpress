@@ -169,26 +169,33 @@ class Guaven_woo_search_front
     public function enqueue()
     {
         if (get_option('guaven_woos_firstrun') != '') {
-            $local_values=$this->local_values();
-            $guaven_woos_main_js_url=apply_filters( 'guaven_woos_main_js_url', plugin_dir_url(__FILE__) . 'assets/' . $local_values['enqname'] . '.js' );
-            wp_register_script($local_values['enqname'], $guaven_woos_main_js_url, array(
-                'jquery'
-            ), $this->js_css_version, true);
-            wp_localize_script($local_values['enqname'], $local_values['enqname'], $local_values['local_values']);
+            $local_values = $this->local_values();
+            $guaven_woos_main_js_url = apply_filters('guaven_woos_main_js_url', plugin_dir_url(__FILE__) . 'assets/' . $local_values['enqname'] . '.js');
+
+            // Registrar y localizar el script
+            wp_register_script($local_values['enqname'], $guaven_woos_main_js_url, array('jquery'), $this->js_css_version, true);
+            wp_localize_script($local_values['enqname'], $local_values['enqname'], array_merge(
+                $local_values['local_values'],
+                [
+                    'ajaxurl' => admin_url('admin-ajax.php'),
+                    'validate_code' => wp_create_nonce('gws_live_validate_code')
+                ]
+            ));
             wp_enqueue_script($local_values['enqname']);
         }
 
+        // Encolar estilos
         wp_enqueue_style('guaven_woos', plugin_dir_url(__FILE__) . 'assets/guaven_woos.css', array(), $this->js_css_version);
 
-        $guaven_woos_live_ui_layout_files=Guaven_woo_search_admin::ui_layouts();
-        $guaven_woos_live_ui_layout_file = esc_attr(get_option("guaven_woos_live_ui_layout")); 
-        if(in_array($guaven_woos_live_ui_layout_file,array_keys($guaven_woos_live_ui_layout_files))){
-            $layout_file=$guaven_woos_live_ui_layout_file;
+        $guaven_woos_live_ui_layout_files = Guaven_woo_search_admin::ui_layouts();
+        $guaven_woos_live_ui_layout_file = esc_attr(get_option("guaven_woos_live_ui_layout"));
+        if (in_array($guaven_woos_live_ui_layout_file, array_keys($guaven_woos_live_ui_layout_files))) {
+            $layout_file = $guaven_woos_live_ui_layout_file;
+        } else {
+            $layout_file = 'default';
         }
-        else {
-            $layout_file='default';
-        }
-        wp_enqueue_style('guaven_woos_layout', plugin_dir_url(__FILE__) . 'assets/gws_layouts/'.$layout_file.'.css', array(), $this->js_css_version);
+
+        wp_enqueue_style('guaven_woos_layout', plugin_dir_url(__FILE__) . 'assets/gws_layouts/' . $layout_file . '.css', array(), $this->js_css_version);
     }
 
     public function trend_calculator()

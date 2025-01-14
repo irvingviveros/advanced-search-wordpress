@@ -1,12 +1,12 @@
 <?php
 /*
-Plugin Name:       WooCommerce Search Engine
+Plugin Name:       WooCommerce Search Engine for Samskipti
 Plugin URI:        https://guaven.com/woo-search-box
 Description:       Ultimate WordPress plugin which turns a simple search box of your WooCommerce Store to the smart, powerful and multifunctional magic box that helps you to sell more products.
 Version:           2.2.17
 WC requires at least: 4.0
 WC tested up to: 8.1
-Author:            Guaven Labs
+Author:            Guaven Labs - Irving Viveros
 Author URI:        https://guaven.com
 Text Domain:       guaven_woo_search
 Domain Path:       languages

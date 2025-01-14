@@ -64,6 +64,10 @@ class Guaven_Woos_Init {
             add_action('wp_ajax_nopriv_guaven_purengine_search', array($guaven_woo_search_backend, 'purengine_ajax_callback'));
             add_action('wp_head', array($guaven_woo_search_backend,'force_search_reload'));
             add_action('save_post', array($guaven_woo_search_backend, 'post_saved_hooks'), 10, 3);
+            add_action('wp_ajax_guaven_woos_find_pages',  array($guaven_woo_search_backend ,  'guaven_woos_find_pages'));
+            add_action('wp_ajax_nopriv_guaven_woos_find_pages',  array($guaven_woo_search_backend , 'guaven_woos_find_pages'));
+            add_action('wp_ajax_guaven_woos_find_posts', array($guaven_woo_search_backend, 'guaven_woos_find_posts'));
+            add_action('wp_ajax_nopriv_guaven_woos_find_posts', array($guaven_woo_search_backend, 'guaven_woos_find_posts'));
         }
 
         add_filter('posts_orderby', array($guaven_woo_search_backend,'backend_search_orderby'));

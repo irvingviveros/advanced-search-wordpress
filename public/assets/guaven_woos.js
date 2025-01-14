@@ -757,14 +757,16 @@
 
     <div class="row">
         <div class="col-md-4">
-            <p class="searchHeader">Categories</p>
+            <p class="searchHeader">Flokkar</p> <!-- Categories -->
             ${guaven_woos_cfinalresult}
-            <p class="searchHeader">Pages</p>
-            <a href="#" class="guaven_woos_titlediv_cat">Page 1</a>
+            <p class="searchHeader">Síður</p> <!-- Pages -->
+            <div class="guaven_woos_pages_container" style="display: none;"></div>
+             <p class="searchHeader">Bloggfærslur</p> <!-- Blog Posts -->
+            <div class="guaven_woos_posts_container" style="display: none;"></div>
         </div>
-    
-        <div class="col-md-8">
-            <p class="searchHeader">Products</p>
+        <div class="col-md-1"></div> <!-- Empty column -->
+        <div class="col-md-7">
+            <p class="searchHeader">Vörur</p> <!-- Products -->
             <ul class="guaven_woos_final_results">
                 ${guaven_woos_finalresult}
             </ul>
@@ -1201,6 +1203,50 @@
 
       guaven_woos.tempval=gws_tempval(jQuery(this).val());
       guaven_woos_tempval=guaven_woos.tempval;
+      // IV, búsqueda de páginas
+      jQuery.ajax({
+        url: guaven_woos.ajaxurl, // La URL debe apuntar correctamente a admin-ajax.php
+        method: 'POST', // Especificar el método POST
+        data: {
+          action: 'guaven_woos_find_pages', // Nombre de la acción en el backend
+          search_query: guaven_woos_tempval // El término de búsqueda
+        },
+        success: function(response) {
+          console.log('Respuesta AJAX:', response); // Depurar la respuesta del servidor
+          if (response.success) {
+            jQuery('.guaven_woos_pages_container').html(response.data.html).show();
+          } else if (response.data && response.data.message) {
+            jQuery('.guaven_woos_pages_container').html("<p>" + response.data.message + "</p>").show();
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('Error en la solicitud AJAX:', error);
+          jQuery('.guaven_woos_pages_container').html("<p>Error en la búsqueda.</p>").show();
+        }
+      });
+
+      // Blog post search logic
+      jQuery.ajax({
+        url: guaven_woos.ajaxurl, // Correct URL for admin-ajax.php
+        method: 'POST', // Use POST method
+        data: {
+          action: 'guaven_woos_find_posts', // Action name for the backend
+          search_query: guaven_woos_tempval // The search query
+        },
+        success: function(response) {
+          console.log('Blog Posts AJAX Response:', response); // Debug response
+          if (response.success) {
+            jQuery('.guaven_woos_posts_container').html(response.data.html).show();
+          } else if (response.data && response.data.message) {
+            jQuery('.guaven_woos_posts_container').html("<p>" + response.data.message + "</p>").show();
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('Error in Blog Post AJAX:', error);
+          jQuery('.guaven_woos_posts_container').html("<p>Error in search.</p>").show();
+        }
+      });
+
       guaven_woos.tempval_raw = jQuery(this).val().toLowerCase();
       is_runSearch=1;
       is_runSearch_live=1;

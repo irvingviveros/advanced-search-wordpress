@@ -586,4 +586,100 @@ class Guaven_woo_search_backend
         return true;
     }
 
+    public function guaven_woos_result_pagesadd($search_query) {
+        global $wpdb;
+
+        // Limita la cantidad de resultados a 10 (puedes ajustarlo)
+        $max_results = 10;
+
+        // Construir la consulta para obtener páginas publicadas
+        $results = $wpdb->get_results($wpdb->prepare(
+            "SELECT ID, post_title 
+         FROM {$wpdb->posts} 
+         WHERE post_type = 'page' 
+         AND post_status = 'publish' 
+         AND post_title LIKE %s 
+         LIMIT %d",
+            '%' . $wpdb->esc_like($search_query) . '%', $max_results
+        ));
+
+        // Formatear resultados como HTML
+        $pages_html = '';
+        foreach ($results as $page) {
+            $page_url = get_permalink($page->ID);
+            $pages_html .= "<li class='guaven_woos_suggestion_list' style='min-height: auto !important;'><a class='guaven_woos_titlediv_cat' href='{$page_url}'>{$page->post_title}</a></li>";
+        }
+
+        return $pages_html;
+    }
+
+    function guaven_woos_find_pages() {
+        // Validar si existe el término de búsqueda
+        $search_query = isset($_REQUEST['search_query']) ? sanitize_text_field($_REQUEST['search_query']) : '';
+        if (empty($search_query)) {
+            wp_send_json_error(['message' => 'No search query provided.']);
+            wp_die();
+        }
+
+        $backend = new Guaven_woo_search_backend();
+
+        // Llamar a la función para buscar páginas
+        $pages_html = $backend->guaven_woos_result_pagesadd($search_query);
+
+        // Enviar respuesta en formato JSON
+        if (!empty($pages_html)) {
+            wp_send_json_success(['html' => $pages_html]);
+        }
+
+        wp_die();
+    }
+
+    public function guaven_woos_result_postsadd($search_query) {
+        global $wpdb;
+
+        // Limit results to 10 (adjustable)
+        $max_results = 10;
+
+        // Query to get published blog posts
+        $results = $wpdb->get_results($wpdb->prepare(
+            "SELECT ID, post_title 
+         FROM {$wpdb->posts} 
+         WHERE post_type = 'post' 
+         AND post_status = 'publish' 
+         AND post_title LIKE %s 
+         LIMIT %d",
+            '%' . $wpdb->esc_like($search_query) . '%', $max_results
+        ));
+
+        // Format results as HTML
+        $posts_html = '';
+        foreach ($results as $post) {
+            $post_url = get_permalink($post->ID);
+            $posts_html .= "<li class='guaven_woos_suggestion_list' style='min-height: auto !important;'><a class='guaven_woos_titlediv_cat' href='{$post_url}'>{$post->post_title}</a></li>";
+        }
+
+        return $posts_html;
+    }
+
+    function guaven_woos_find_posts() {
+        // Validate the search query
+        $search_query = isset($_REQUEST['search_query']) ? sanitize_text_field($_REQUEST['search_query']) : '';
+        if (empty($search_query)) {
+            wp_send_json_error(['message' => 'No search query provided.']);
+            wp_die();
+        }
+
+        $backend = new Guaven_woo_search_backend();
+
+        // Call the function to search blog posts
+        $posts_html = $backend->guaven_woos_result_postsadd($search_query);
+
+        // Send the response in JSON format
+        if (!empty($posts_html)) {
+            wp_send_json_success(['html' => $posts_html]);
+        }
+
+        wp_die();
+    }
+
 }
